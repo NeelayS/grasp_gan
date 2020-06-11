@@ -445,4 +445,15 @@ for epoch in range(epochs):
         print("===> Epoch[{}]({}/{}): Loss_D: {:.4f} Loss_G: {:.4f}".format(
             epoch, iteration, len(data_loader), loss_d.item(), loss_g.item()))
 
+    if epoch % 50 == 0:
+        if not os.path.exists("checkpoint"):
+            os.mkdir("checkpoint")
+        if not os.path.exists(os.path.join("checkpoint", opt.dataset)):
+            os.mkdir(os.path.join("checkpoint", opt.dataset))
+        net_g_model_out_path = "checkpoint/{}/netG_model_epoch_{}.pth".format(opt.dataset, epoch)
+        net_d_model_out_path = "checkpoint/{}/netD_model_epoch_{}.pth".format(opt.dataset, epoch)
+        torch.save(net_g, net_g_model_out_path)
+        torch.save(net_d, net_d_model_out_path)
+        print("Checkpoint saved to {}".format("checkpoint" + opt.dataset))
+
 
