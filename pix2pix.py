@@ -14,6 +14,9 @@ from PIL import Image
 
 data_dir = "/content/drive/My Drive/Grasping GAN/processed"
 model_dir = "/content/drive/My Drive/Grasping GAN/models"
+batch_size = 8
+epochs = 1
+lr = 0.01
 
 class GraspingDataset(data.Dataset):
 
@@ -372,7 +375,6 @@ class GANLoss(nn.Module):
         target_tensor = self.get_target_tensor(input, target_is_real)
         return self.loss(input, target_tensor)
 
-batch_size = 8
 
 data_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True)
 
@@ -385,12 +387,10 @@ criterionGAN = GANLoss().to(device)
 criterionL1 = nn.L1Loss().to(device)
 criterionMSE = nn.MSELoss().to(device)
 
-lr = 0.01
 
 optimizer_g = optim.Adam(net_g.parameters(), lr=lr) 
 optimizer_d = optim.Adam(net_d.parameters(), lr=lr)
 
-epochs = 1
 l1_weight = 10
 
 for epoch in range(epochs):
@@ -447,10 +447,10 @@ for epoch in range(epochs):
             epoch, iteration, len(data_loader), loss_d.item(), loss_g.item()))
 
     if not os.path.exists(model_dir):
-        os.mkdir("checkpoint")
+        os.mkdir(model_dir)
 
-    torch.save(net_g, os.path.join(model_dir, 'generator'))
-    torch.save(net_d, os.path.join(model_dir, 'discriminator'))
+    torch.save(net_g.state_dict(), os.path.join(model_dir, 'generator.pth'))
+    torch.save(net_d.state_dict(), os.path.join(model_dir, 'discriminator.pth'))
 
 
 
